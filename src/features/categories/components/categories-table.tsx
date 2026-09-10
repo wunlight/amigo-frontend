@@ -1,55 +1,119 @@
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { Category } from "../types/categories.type";
 
-type CategoriesTableProps = {
+type CategorysTableProps = {
   categories: Category[];
   isLoading: boolean;
   isError: boolean;
+  refetch: () => void;
 };
 
-function CategoriesTable({
+function CategoryTableBody({
   categories,
   isLoading,
   isError,
-}: CategoriesTableProps) {
+}: CategorysTableProps) {
+  if (isLoading) {
+    return (
+      <TableRow>
+        <TableCell colSpan={2} className="h-24 text-center">
+          Loading categories...
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  if (isError) {
+    return (
+      <TableRow>
+        <TableCell colSpan={2} className="h-24 text-center">
+          Failed to load categories.
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  if (categories.length === 0) {
+    return (
+      <TableRow>
+        <TableCell colSpan={2} className="h-24 text-center">
+          No categories found.
+        </TableCell>
+      </TableRow>
+    );
+  }
+
+  return categories.map((category) => (
+    <TableRow key={category.id}>
+      <TableCell>{category.name}</TableCell>
+      <TableCell>
+        <div className="flex justify-end gap-3">
+          <Button variant="secondary" size="icon">
+            <span className="icon-[hugeicons--pencil-edit-02]" />
+          </Button>
+
+          <Button variant="destructive" size="icon">
+            <span className="icon-[hugeicons--delete-02]" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  ));
+}
+
+function CategorysTable({
+  categories,
+  isLoading,
+  isError,
+  refetch,
+}: CategorysTableProps) {
   return (
-    <table className="border-collapse">
-      <thead>
-        <tr className="border-b border-zinc-300">
-          <th className="px-4 py-2 text-left">Name</th>
-        </tr>
-      </thead>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>
+            <div className="flex justify-end">
+              <Button>
+                <span className="icon-[hugeicons--plus]" />
+                <span>Add Category</span>
+              </Button>
+            </div>
+          </TableHead>
+        </TableRow>
+      </TableHeader>
 
-      <tbody>
-        {isLoading && (
-          <tr className="border-b border-zinc-300">
-            <td className="px-4 py-2 text-center">Loading...</td>
-          </tr>
-        )}
+      <TableBody>
+        <CategoryTableBody
+          categories={categories}
+          isLoading={isLoading}
+          isError={isError}
+          refetch={refetch}
+        />
+      </TableBody>
 
-        {isError && (
-          <tr className="border-b border-zinc-300">
-            <td className="px-4 py-2 text-center">
-              Failed to load categories.
-            </td>
-          </tr>
-        )}
-
-        {!isLoading && !isError && categories.length === 0 && (
-          <tr className="border-b border-zinc-300">
-            <td className="px-4 py-2 text-center">No categories found.</td>
-          </tr>
-        )}
-
-        {!isLoading &&
-          !isError &&
-          categories.map((category) => (
-            <tr key={category.id} className="border-b border-zinc-300">
-              <td className="px-4 py-2">{category.name}</td>
-            </tr>
-          ))}
-      </tbody>
-    </table>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={2}>
+            <div className="flex justify-end">
+              <Button size="icon" onClick={() => refetch()}>
+                <span className="icon-[hugeicons--refresh-04]" />
+              </Button>
+            </div>
+          </TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
   );
 }
 
-export default CategoriesTable;
+export default CategorysTable;

@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import CategoriesTable from "../components/categories-table";
-import CategoryForm from "../components/category-form";
 import { useCategories } from "../hooks/use-categories";
 
 function CategoriesList() {
@@ -12,20 +11,17 @@ function CategoriesList() {
   } = useCategories();
 
   return (
-    <div className="flex flex-col p-4">
-      <div className="flex p-4">
-        <CategoryForm />
-      </div>
-      <CategoriesTable
-        categories={categories}
-        isLoading={isFetching}
-        isError={isError}
-      />
-      <div className="flex p-4">
-        <Button size="icon" className="ml-auto" onClick={() => refetch()}>
-          <span className="icon-[mdi--refresh]" />
-        </Button>
-      </div>
+    <div className="p-4">
+      <Card>
+        <CardContent>
+          <CategoriesTable
+            categories={categories}
+            isLoading={isFetching}
+            isError={isError}
+            refetch={refetch}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }
