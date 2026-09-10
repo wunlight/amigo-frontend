@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,13 +10,10 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import type { Category } from "../types/categories.type";
+import CategoryRow from "./category-row";
+import CreateCategoryRow from "./create-category-row";
 
-type CreateCategoryRowProps = {
-  isSubmitting: boolean;
-  onCreate: (name: string) => Promise<void>;
-};
-
-type CategoryTableProps = {
+type CategoriesTableProps = {
   categories: Category[];
   isLoading: boolean;
   isError: boolean;
@@ -27,151 +23,6 @@ type CategoryTableProps = {
   onDelete: (id: string) => Promise<void>;
 };
 
-function CreateCategoryRow({ isSubmitting, onCreate }: CreateCategoryRowProps) {
-  const [name, setName] = useState("");
-
-  async function handleSubmit() {
-    const value = name.trim();
-
-    if (!value) return;
-
-    await onCreate(value);
-    setName("");
-  }
-
-  return (
-    <TableRow>
-      <TableCell>
-        <Input
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          placeholder="Category name"
-          disabled={isSubmitting}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              handleSubmit();
-            }
-          }}
-        />
-      </TableCell>
-
-      <TableCell>
-        <div className="flex justify-end">
-          <Button
-            size="icon"
-            disabled={!name.trim() || isSubmitting}
-            onClick={handleSubmit}
-          >
-            {isSubmitting ? (
-              <span className="icon-[hugeicons--loader-circle] animate-spin" />
-            ) : (
-              <span className="icon-[hugeicons--check]" />
-            )}
-          </Button>
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-}
-
-function CategoryRow({
-  category,
-  isEditing,
-  isSubmitting,
-  onEdit,
-  onCancel,
-  onUpdate,
-  onDelete,
-}: {
-  category: Category;
-  isEditing: boolean;
-  isSubmitting: boolean;
-  onEdit: () => void;
-  onCancel: () => void;
-  onUpdate: (name: string) => Promise<void>;
-  onDelete: () => void;
-}) {
-  const [name, setName] = useState(category.name);
-
-  async function handleSubmit() {
-    const value = name.trim();
-
-    if (!value || value === category.name) {
-      onCancel();
-      return;
-    }
-
-    await onUpdate(value);
-  }
-
-  if (isEditing) {
-    return (
-      <TableRow>
-        <TableCell>
-          <Input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            disabled={isSubmitting}
-            autoFocus
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                handleSubmit();
-              }
-
-              if (event.key === "Escape") {
-                onCancel();
-              }
-            }}
-          />
-        </TableCell>
-
-        <TableCell>
-          <div className="flex justify-end gap-3">
-            <Button
-              size="icon"
-              disabled={!name.trim() || isSubmitting}
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? (
-                <span className="icon-[hugeicons--loader-circle] animate-spin" />
-              ) : (
-                <span className="icon-[hugeicons--check]" />
-              )}
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              disabled={isSubmitting}
-              onClick={onCancel}
-            >
-              <span className="icon-[hugeicons--cancel-01]" />
-            </Button>
-          </div>
-        </TableCell>
-      </TableRow>
-    );
-  }
-
-  return (
-    <TableRow>
-      <TableCell>{category.name}</TableCell>
-
-      <TableCell>
-        <div className="flex justify-end gap-3">
-          <Button variant="secondary" size="icon" onClick={onEdit}>
-            <span className="icon-[hugeicons--pencil-edit-02]" />
-          </Button>
-
-          <Button variant="destructive" size="icon" onClick={onDelete}>
-            <span className="icon-[hugeicons--delete-02]" />
-          </Button>
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-}
-
 function CategoriesTable({
   categories,
   isLoading,
@@ -179,7 +30,8 @@ function CategoriesTable({
   refetch,
   onCreate,
   onUpdate,
-}: CategoryTableProps) {
+  onDelete,
+}: CategoriesTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -187,6 +39,7 @@ function CategoriesTable({
   async function handleCreate(name: string) {
     try {
       setIsCreating(true);
+
       await onCreate(name);
       refetch();
     } finally {
@@ -197,7 +50,9 @@ function CategoriesTable({
   async function handleUpdate(id: string, name: string) {
     try {
       setSubmittingId(id);
+
       await onUpdate(id, name);
+
       setEditingId(null);
       refetch();
     } finally {
@@ -206,7 +61,8 @@ function CategoriesTable({
   }
 
   async function handleDelete(id: string) {
-    console.log(id);
+    await onDelete(id);
+    refetch();
   }
 
   return (
