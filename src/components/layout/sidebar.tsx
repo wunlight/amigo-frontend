@@ -10,9 +10,9 @@ function Sidebar() {
           label="Cashier"
         />
         <SidebarLink
-          to="/purchases"
+          to="/restock"
           icon="icon-[hugeicons--package-receive]"
-          label="Purchases"
+          label="Restock"
         />
         <SidebarLink
           to="/products"

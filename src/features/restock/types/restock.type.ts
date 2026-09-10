@@ -1,12 +1,12 @@
-export type CreatePurchaseItemRequest = {
+export type CreateRestockItemRequest = {
   product_id: string;
   quantity: number;
   unit_cost: number;
 };
 
-export type CreatePurchaseRequest = {
+export type CreateRestockRequest = {
   reference_number: string;
   purchased_at: string;
-  items: CreatePurchaseItemRequest[];
+  items: CreateRestockItemRequest[];
   notes?: string | undefined;
 };
