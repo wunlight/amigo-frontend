@@ -3,6 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -13,6 +14,7 @@ type ProductsTableProps = {
   products: Product[];
   isLoading: boolean;
   isError: boolean;
+  refetch: () => void;
 };
 
 function ProductTableBody({
@@ -68,22 +70,48 @@ function ProductTableBody({
   ));
 }
 
-function ProductsTable({ products, isLoading, isError }: ProductsTableProps) {
+function ProductsTable({
+  products,
+  isLoading,
+  isError,
+  refetch,
+}: ProductsTableProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
-          <TableHead></TableHead>
+          <TableHead>
+            <div className="flex justify-end">
+              <Button>
+                <span className="icon-[hugeicons--plus]" />
+                <span>Add Product</span>
+              </Button>
+            </div>
+          </TableHead>
         </TableRow>
       </TableHeader>
+
       <TableBody>
         <ProductTableBody
           products={products}
           isLoading={isLoading}
           isError={isError}
+          refetch={() => refetch()}
         />
       </TableBody>
+
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={2}>
+            <div className="flex justify-end">
+              <Button size="icon" onClick={() => refetch()}>
+                <span className="icon-[hugeicons--refresh-04]" />
+              </Button>
+            </div>
+          </TableCell>
+        </TableRow>
+      </TableFooter>
     </Table>
   );
 }
