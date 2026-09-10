@@ -14,3 +14,11 @@ export async function detail(id: string) {
 export async function create(req: CreateCategoryRequest) {
   return httpClient.post(PREFIX, req);
 }
+
+export async function update(id: string, req: CreateCategoryRequest) {
+  return httpClient.put(`${PREFIX}/${id}`, req);
+}
+
+export async function remove(id: string) {
+  return httpClient.delete(`${PREFIX}/${id}`);
+}

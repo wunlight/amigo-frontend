@@ -1,5 +1,5 @@
 import * as api from "../api/categories.api";
-import type { Category, CreateCategoryRequest } from "../types/categories.type";
+import type { Category } from "../types/categories.type";
 
 export async function getCategories(): Promise<Category[]> {
   const { data } = await api.list();
@@ -11,6 +11,14 @@ export async function getCategory(id: string): Promise<Category> {
   return data;
 }
 
-export async function createCategory(req: CreateCategoryRequest) {
-  await api.create(req);
+export async function createCategory(name: string) {
+  await api.create({ name });
+}
+
+export async function updateCategory(id: string, name: string) {
+  await api.update(id, { name });
+}
+
+export async function deleteCategory(id: string) {
+  await api.remove(id);
 }
