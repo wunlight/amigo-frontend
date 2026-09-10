@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Product } from "../types/products.type";
+import ProductRow from "./product-row";
 
 type ProductsTableProps = {
   products: Product[];
@@ -23,6 +24,10 @@ function ProductsTable({
   isError,
   refetch,
 }: ProductsTableProps) {
+  async function handleDelete(id: string) {
+    console.log(id);
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -64,20 +69,10 @@ function ProductsTable({
         {!isLoading &&
           !isError &&
           products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>
-                <div className="flex justify-end gap-3">
-                  <Button variant="secondary" size="icon">
-                    <span className="icon-[hugeicons--pencil-edit-02]" />
-                  </Button>
-
-                  <Button variant="destructive" size="icon">
-                    <span className="icon-[hugeicons--delete-02]" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
+            <ProductRow
+              product={product}
+              onDelete={() => handleDelete(product.id)}
+            />
           ))}
       </TableBody>
 
