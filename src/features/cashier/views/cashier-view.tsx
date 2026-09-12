@@ -42,7 +42,7 @@ function CashierView() {
       if (!product) return prev;
 
       if (existing) {
-        if (existing.stock >= product.minimum_stock) return prev;
+        if (existing.stock >= product.current_stock) return prev;
         return prev.map((p) =>
           p.id === productId ? { ...p, stock: p.stock + 1 } : p,
         );

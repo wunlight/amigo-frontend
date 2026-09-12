@@ -1,8 +1,8 @@
+import { useProducts } from "@/features/products/hooks/use-products";
+import { createPurchase } from "@/features/purchases/services/purchases.service";
 import { useState } from "react";
 import ProductCard from "../components/product-card";
 import RestockDetails from "../components/restock-details";
-import { useProducts } from "@/features/products/hooks/use-products";
-import { createPurchase } from "@/features/purchases/services/purchases.service";
 
 type SelectedProduct = {
   id: string;
@@ -14,7 +14,9 @@ type SelectedProduct = {
 
 function RestockView() {
   const { data: products = [], isLoading, isError } = useProducts();
-  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
+    [],
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleIncrement = (productId: string) => {
@@ -25,10 +27,19 @@ function RestockView() {
 
       if (existing) {
         return prev.map((p) =>
-          p.id === productId ? { ...p, stock: p.stock + 1 } : p
+          p.id === productId ? { ...p, stock: p.stock + 1 } : p,
         );
       }
-      return [...prev, { id: productId, name: product.name, price: product.selling_price, unit: product.unit, stock: 1 }];
+      return [
+        ...prev,
+        {
+          id: productId,
+          name: product.name,
+          price: product.selling_price,
+          unit: product.unit,
+          stock: 1,
+        },
+      ];
     });
   };
 
@@ -41,7 +52,7 @@ function RestockView() {
         return prev.filter((p) => p.id !== productId);
       }
       return prev.map((p) =>
-        p.id === productId ? { ...p, stock: p.stock - 1 } : p
+        p.id === productId ? { ...p, stock: p.stock - 1 } : p,
       );
     });
   };
@@ -50,7 +61,10 @@ function RestockView() {
     return selectedProducts.find((p) => p.id === productId)?.stock || 0;
   };
 
-  const totalRestock = selectedProducts.reduce((sum, p) => sum + p.price * p.stock, 0);
+  const totalRestock = selectedProducts.reduce(
+    (sum, p) => sum + p.price * p.stock,
+    0,
+  );
 
   const handleSubmit = async () => {
     if (selectedProducts.length === 0 || isSubmitting) return;
@@ -77,9 +91,13 @@ function RestockView() {
     <div className="flex gap-3 h-full">
       <div className="grid grid-cols-2 gap-3 p-3 min-h-0 h-fit max-h-full w-full overflow-auto">
         {isLoading ? (
-          <div className="col-span-2 text-center py-8 text-zinc-500">Loading products...</div>
+          <div className="col-span-2 text-center py-8 text-zinc-500">
+            Loading products...
+          </div>
         ) : isError ? (
-          <div className="col-span-2 text-center py-8 text-red-500">Failed to load products</div>
+          <div className="col-span-2 text-center py-8 text-red-500">
+            Failed to load products
+          </div>
         ) : (
           products.map((product) => (
             <ProductCard
@@ -87,7 +105,7 @@ function RestockView() {
               name={product.name}
               price={product.selling_price}
               unit={product.unit}
-              stocks={product.minimum_stock}
+              stocks={product.current_stock}
               selectedStock={getSelectedStock(product.id)}
               onIncrement={() => handleIncrement(product.id)}
               onDecrement={() => handleDecrement(product.id)}

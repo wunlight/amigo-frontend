@@ -70,8 +70,10 @@ function ProductsTable({
           !isError &&
           products.map((product) => (
             <ProductRow
+              key={product.id}
               product={product}
               onDelete={() => handleDelete(product.id)}
+              onSuccess={refetch}
             />
           ))}
       </TableBody>

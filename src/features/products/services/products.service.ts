@@ -14,3 +14,7 @@ export async function getProduct(id: string): Promise<Product> {
 export async function createProduct(req: CreateProductRequest) {
   await api.create(req);
 }
+
+export async function updateProduct(id: string, req: CreateProductRequest) {
+  await api.update(id, req);
+}

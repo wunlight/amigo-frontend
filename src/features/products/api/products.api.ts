@@ -14,3 +14,7 @@ export async function detail(id: string) {
 export async function create(req: CreateProductRequest) {
   return httpClient.post(PREFIX, req);
 }
+
+export async function update(id: string, req: CreateProductRequest) {
+  return httpClient.put(`${PREFIX}/${id}`, req);
+}
