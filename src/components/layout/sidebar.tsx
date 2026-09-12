@@ -24,6 +24,11 @@ function Sidebar() {
           icon="icon-[hugeicons--folder-01]"
           label="Categories"
         />
+        <SidebarLink
+          to="/services"
+          icon="icon-[hugeicons--wrench-01]"
+          label="Services"
+        />
       </div>
     </div>
   );
