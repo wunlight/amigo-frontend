@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 type SaleDetailsProps = {
   selectedProducts: Array<{ id: string; name: string; price: number; unit: string; stock: number }>;
   totalSale: number;
+  onSubmit: () => void;
+  isSubmitting: boolean;
 };
 
-function SaleDetails({ selectedProducts, totalSale }: SaleDetailsProps) {
+function SaleDetails({ selectedProducts, totalSale, onSubmit, isSubmitting }: SaleDetailsProps) {
   return (
     <div className="flex flex-col gap-3 p-4 shrink-0 h-full w-80 bg-zinc-50">
       <h6 className="font-semibold text-xl">Sale Details</h6>
@@ -44,7 +46,9 @@ function SaleDetails({ selectedProducts, totalSale }: SaleDetailsProps) {
         <span>Total</span>
         <span>Rp. {totalSale.toLocaleString()}</span>
       </div>
-      <Button disabled={selectedProducts.length === 0}>Submit</Button>
+      <Button disabled={selectedProducts.length === 0 || isSubmitting} onClick={onSubmit}>
+        {isSubmitting ? "Submitting..." : "Submit"}
+      </Button>
     </div>
   );
 }
