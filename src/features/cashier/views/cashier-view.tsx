@@ -156,11 +156,10 @@ function CashierView() {
               name={product.name}
               price={product.selling_price}
               unit={product.unit}
-              stocks={product.minimum_stock}
+              stocks={product.current_stock}
               selectedStock={getSelectedStock(product.id)}
               onIncrement={() => handleIncrement(product.id)}
               onDecrement={() => handleDecrement(product.id)}
-              maxStock={product.minimum_stock}
             />
           ))
         )}

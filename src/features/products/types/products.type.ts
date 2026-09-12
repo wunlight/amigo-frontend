@@ -6,6 +6,7 @@ export type Product = {
   unit: string;
   selling_price: number;
   minimum_stock: number;
+  current_stock: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
