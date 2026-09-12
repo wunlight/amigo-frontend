@@ -1,9 +1,55 @@
+import { useState } from "react";
 import ProductCard from "../components/product-card";
 import SaleDetails from "../components/sale-details";
 import { useProducts } from "@/features/products/hooks/use-products";
 
+type SelectedProduct = {
+  id: string;
+  name: string;
+  price: number;
+  unit: string;
+  stock: number;
+};
+
 function CashierView() {
   const { data: products = [], isLoading, isError } = useProducts();
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
+
+  const handleIncrement = (productId: string) => {
+    setSelectedProducts((prev) => {
+      const existing = prev.find((p) => p.id === productId);
+      const product = products.find((p) => p.id === productId);
+      if (!product) return prev;
+
+      if (existing) {
+        if (existing.stock >= product.minimum_stock) return prev;
+        return prev.map((p) =>
+          p.id === productId ? { ...p, stock: p.stock + 1 } : p
+        );
+      }
+      return [...prev, { id: productId, name: product.name, price: product.selling_price, unit: product.unit, stock: 1 }];
+    });
+  };
+
+  const handleDecrement = (productId: string) => {
+    setSelectedProducts((prev) => {
+      const existing = prev.find((p) => p.id === productId);
+      if (!existing) return prev;
+
+      if (existing.stock <= 1) {
+        return prev.filter((p) => p.id !== productId);
+      }
+      return prev.map((p) =>
+        p.id === productId ? { ...p, stock: p.stock - 1 } : p
+      );
+    });
+  };
+
+  const getSelectedStock = (productId: string) => {
+    return selectedProducts.find((p) => p.id === productId)?.stock || 0;
+  };
+
+  const totalSale = selectedProducts.reduce((sum, p) => sum + p.price * p.stock, 0);
 
   return (
     <div className="flex gap-3 h-full">
@@ -20,12 +66,19 @@ function CashierView() {
               price={product.selling_price}
               unit={product.unit}
               stocks={product.minimum_stock}
+              selectedStock={getSelectedStock(product.id)}
+              onIncrement={() => handleIncrement(product.id)}
+              onDecrement={() => handleDecrement(product.id)}
+              maxStock={product.minimum_stock}
             />
           ))
         )}
       </div>
 
-      <SaleDetails />
+      <SaleDetails
+        selectedProducts={selectedProducts}
+        totalSale={totalSale}
+      />
     </div>
   );
 }

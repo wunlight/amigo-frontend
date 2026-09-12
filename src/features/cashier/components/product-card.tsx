@@ -5,9 +5,16 @@ type ProductCardProps = {
   price: number;
   unit: string;
   stocks: number;
+  selectedStock: number;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  maxStock: number;
 };
 
-function ProductCard({ name, price, unit, stocks }: ProductCardProps) {
+function ProductCard({ name, price, unit, stocks, selectedStock, onIncrement, onDecrement, maxStock }: ProductCardProps) {
+  const canIncrement = selectedStock < maxStock;
+  const canDecrement = selectedStock > 0;
+
   return (
     <div className="flex flex-col gap-3 p-3 bg-zinc-50 rounded-lg">
       <div className="flex items-center gap-3">
@@ -20,11 +27,12 @@ function ProductCard({ name, price, unit, stocks }: ProductCardProps) {
       <hr />
       <div className="flex items-center justify-between">
         <span className="text-sm text-zinc-500">Stock: {stocks}</span>
-        <div className="flex gap-1.5">
-          <Button size="icon">
+        <div className="flex items-center gap-2">
+          <Button size="icon" onClick={onDecrement} disabled={!canDecrement} aria-label="Decrease quantity">
             <span className="icon-[hugeicons--minus]" />
           </Button>
-          <Button size="icon">
+          <span className="w-8 text-center font-medium">{selectedStock}</span>
+          <Button size="icon" onClick={onIncrement} disabled={!canIncrement} aria-label="Increase quantity">
             <span className="icon-[hugeicons--plus]" />
           </Button>
         </div>
