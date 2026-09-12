@@ -1,18 +1,25 @@
 import { Button } from "@/components/ui/button";
 
-function ProductCard() {
+type ProductCardProps = {
+  name: string;
+  price: number;
+  unit: string;
+  stocks: number;
+};
+
+function ProductCard({ name, price, unit, stocks }: ProductCardProps) {
   return (
     <div className="flex flex-col gap-3 p-3 bg-zinc-50 rounded-lg">
       <div className="flex items-center gap-3">
-        <h6 className="truncate w-full font-semibold text-lg">Product Name</h6>
+        <h6 className="truncate w-full font-semibold text-lg">{name}</h6>
         <div className="flex flex-col items-end shrink-0">
-          <span>Rp. 12,000</span>
-          <span className="text-sm text-zinc-500">/ Unit</span>
+          <span>Rp. {price.toLocaleString()}</span>
+          <span className="text-sm text-zinc-500">/ {unit}</span>
         </div>
       </div>
       <hr />
       <div className="flex items-center justify-between">
-        <span className="text-sm text-zinc-500">Stock: 12</span>
+        <span className="text-sm text-zinc-500">Stock: {stocks}</span>
         <div className="flex gap-1.5">
           <Button size="icon">
             <span className="icon-[hugeicons--minus]" />
